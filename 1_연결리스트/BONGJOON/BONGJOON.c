@@ -1,1 +1,5 @@
-// 작성전
+#include <stdio.h>
+  int main(void)
+  {
+  }
+  
