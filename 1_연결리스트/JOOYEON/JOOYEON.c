@@ -54,7 +54,7 @@ int main() {
 		curr = curr->next;
 	}
 
-    free(middle2);
+        free(middle2);
 	free(middle);
 	free(head);
 
