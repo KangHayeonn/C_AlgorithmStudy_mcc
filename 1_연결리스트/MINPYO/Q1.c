@@ -1,4 +1,3 @@
-// 작성전
 //
 //  main.c
 //  Min&Max
@@ -27,14 +26,10 @@ void add(Node** head, Data data) {
         (*head)->data = data;
         (*head)->next = NULL;
     } else {
-        Node* cursor = *head;
-        while(cursor->next != NULL) {
-            cursor = cursor->next;
-        }
         Node* newNode = (Node*)malloc(sizeof(Node));
         newNode->data = data;
-        newNode->next = NULL;
-        cursor->next = newNode;
+        newNode->next = *head;
+        *head = newNode;
     }
 }
 
