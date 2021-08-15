@@ -1,45 +1,76 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
-/*
-1. 노드에 메모리 할당
-2. next 멤버에 다음 노드의 메모리 주소 저장
-3. data 멤버에 데이터 저장
-4. 마지막 노드라면 next 멤버에 NULL 저장
-*/
-typedef struct Node {	//연결리스트의 노드 구조체
-	int data;		//데이터를 저장하는 멤버
-	struct Node* next;		//다음 노드의 주소를 저장하는 포인터
-}node;
+typedef struct listNode {	
 
-int main() {
-	int i = 1;
+	int Data;
+	struct listNode* Next;
+	struct listNode* Prev;
+}Node;
 
-	node* head = malloc(sizeof(node));	//헤드노드 생성, 데이터 저장하지않음
+//노드 생성
+Node* createNode(int data) {
 
-	node* node1 = malloc(sizeof(node));
-	head->next = node1;
-	node1->data = 100;
+	Node* newNode = (Node*)malloc(sizeof(Node));
 
-	node* node2 = malloc(sizeof(node));
-	node1->next = node2;
-	node2->data = 200;
+	//variables initialization
+	newNode->Data = data;
+	newNode->Next = NULL;
+	newNode->Prev = NULL;
 
-	node* node3 = malloc(sizeof(node));
-	node2->next = node3;
-	node3->data = 300;
+	return newNode;
+}
 
-	node3->next = NULL;		//node3은 마지막 노드이므로 다음 노드 없음
+//노드 삭제(메모리에서)
+void deleteNode(Node* Node) {
 
-	node* curr = head->next;	//연결리스트 순회용 포인터. 첫번째 노드의 주소 저장
+	free(Node);
+}
 
-	while (curr != NULL) {		//마지막 노드에서 NULL을 만나고 종료		
-		printf("%d번째 노드의 data: %d\n", i, curr->data);
-		curr = curr->next;		
-		i++;
+//입력한 INDEX의 노드 가져오기
+Node* getNodeAt(Node* head, int index) {
+
+	Node* horse = head;	//헤드에서부터 horse가 달리도록
+	int cnt = 0;
+
+	while (horse != NULL) {
+
+		if (cnt++ == index) {
+			return horse;
+		}
+
+		horse = horse->Next;	//달린다
+	}
+	return NULL;	//못 찾았을 때
+}
+
+int countNode(Node* head) {
+
+	int cnt = 0;
+	Node* horse = head;
+
+	while (horse != NULL) {
+
+		horse = horse->Next;
+		cnt++;		
 	}
 
-	free(node2);
-	free(node1);
-	free(head);
+	return cnt;
+}
+
+void addNode(Node** Head, Node* newNode) {
+
+}
+
+
+
+
+
+
+
+
+   
+
+int main() {
+	
 }
