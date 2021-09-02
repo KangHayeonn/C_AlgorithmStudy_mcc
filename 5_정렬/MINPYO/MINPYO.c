@@ -25,6 +25,11 @@
 // Bubble Sort는 Best Case에서 한 번도 swap하지 않는다는 장점이,
 // Selection Sort는 swap이 바깥쪽 for문에 위치에 swap 횟수가 n-1이여서 Worst Case에서의 장점이 있다
 
+// Heap Sort
+// 시간 복잡도: O(Nlog2(N))
+// Heap의 데이터 저장 시간 복잡도: O(log2(N)) Heap의 데이터 삭제 시간 복잡도: O(log2(N))
+// 정렬 대상의 수: N
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -69,6 +74,103 @@ void SelectionSort(int* array, int size) {
             }
         }
         swap(&array[i], &array[minIdx]); // 배열의 i번째 요소와 배열의 나머지 요소 중 최솟값을 가진 요소와 swap
+    }
+}
+
+#define HEAP_LEN 100
+
+typedef int Priority; // 우선 순위를 int로 지정
+typedef int Data;
+
+typedef struct HeapElem {
+    Priority pr; // 값이 작을 수록 우선 순위가 높게 설정
+    Data data;
+}HeapElem;
+
+typedef struct Heap{
+    int numOfData;
+    HeapElem heapArr[HEAP_LEN]; // 편의를 위해 index 0은 비워두고 사용한다
+}Heap;
+
+void HeapInit(Heap* heap) {
+    heap->numOfData = 0;
+}
+
+int GetParentIDX(int idx) {
+    return idx / 2;
+}
+
+int GetLChildIDX(int idx) {
+    return idx * 2;
+}
+
+int GetRChildIDX(int idx) {
+    return GetLChildIDX(idx) + 1;
+}
+
+// Left Sub Tree, Right Sub Tree의 root node의 우선 순위를 비교해, 높은 곳의 index를 반환해주는 함수
+int GetHighChildIDX(Heap* heap, int idx) {
+    if(GetLChildIDX(idx) > heap->numOfData) { // Left Sub Tree가 없는 경우
+        return 0;
+    } else if(GetLChildIDX(idx) == heap->numOfData) {// Left Sub Tree만 있는 경우
+        return GetLChildIDX(idx);
+    } else {
+        // Left Sub Tree의 root node의 우선 순위가 Right Sub Tree의 root node의 우선 순위보다 높을 경우
+            if(heap->heapArr[GetLChildIDX(idx)].pr < heap->heapArr[GetRChildIDX(idx)].pr) {
+                return GetLChildIDX(idx); // left child의 index 반환
+            } else {
+                return GetRChildIDX(idx);
+            }
+    }
+}
+
+// Heap에 데이터 저장
+void HInsert(Heap* heap, Data data, Priority pr) {
+    if(heap->numOfData < HEAP_LEN - 1) {
+        HeapElem newElem = {pr, data};
+        int idx = heap->numOfData + 1;
+        while(idx != 1) {
+            if(pr < heap->heapArr[GetParentIDX(idx)].pr) {
+                heap->heapArr[idx] = heap->heapArr[GetParentIDX(idx)];
+                idx = GetParentIDX(idx);
+            } else {
+                break;
+            }
+        }
+        heap->heapArr[idx] = newElem;
+        heap->numOfData++;
+    }
+}
+
+// Heap에서 Data 삭제 후 반환
+Data HDelete(Heap* heap) {
+    Data data = heap->heapArr[1].data;
+    HeapElem lastElem = heap->heapArr[heap->numOfData];
+    int idx = 1;
+    int childIdx;
+    while(childIdx = GetHighChildIDX(heap, idx)) {
+        if(lastElem.pr <= heap->heapArr[childIdx].pr) {
+            break;
+        }
+        heap->heapArr[idx] = heap->heapArr[childIdx];
+        idx = childIdx;
+    }
+    
+    heap->heapArr[idx] = lastElem;
+    heap->numOfData--;
+    return data;
+}
+
+void HeapSort(int* array, int size) {
+    Heap heap;
+    HeapInit(&heap);
+    
+    for(int i = 0; i < size; i++){
+        HInsert(&heap, array[i], array[i]); // Data의 크기와 우선 순위를 같게하고 삽입
+    }
+    
+    for(int i = 0; i < size; i++){
+        array[i] = HDelete(&heap);
     }
 }
 
